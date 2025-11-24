@@ -26,6 +26,7 @@ public class PostsDaoTest {
     @DisplayName("Поиск всех (хотя бы дефолтных) статьей")
     void shouldFindAtLeastDefaultPostsTest(){
         List<Post> list = PostsDao.getInstance().findAll();
+
         assertThat(list).hasSizeGreaterThanOrEqualTo(6);
     }
 
