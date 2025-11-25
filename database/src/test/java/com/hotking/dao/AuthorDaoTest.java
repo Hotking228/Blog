@@ -70,7 +70,7 @@ public class AuthorDaoTest {
                 );
     }
 
-    @Test
+    @RepeatedTest(3)
     @DisplayName("Автор с одинаковой почтой/именем пользователя должен создаться 1 раз")
     void createNewAuthorTest(){
         Author dummy = Author.builder()
@@ -85,7 +85,7 @@ public class AuthorDaoTest {
         AuthorDao.getInstance().removeAuthorByUsername(dummy.getUsername());
     }
 
-    @Test
+    @RepeatedTest(3)
     @DisplayName("Автор с должен удаляться 1 раз по имени пользователя")
     void deleteAuthorTest(){
         Author dummy = Author.builder()
