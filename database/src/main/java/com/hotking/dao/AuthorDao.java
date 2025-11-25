@@ -75,21 +75,6 @@ public class AuthorDao {
         }
     }
 
-    private Author build(ResultSet resultSet) {
-        try {
-            return Author.builder()
-                    .id(resultSet.getInt("id"))
-                    .username(resultSet.getString("username"))
-                    .email(resultSet.getString("email"))
-                    .password(resultSet.getString("password"))
-                    .createdAt(resultSet.getTimestamp("created_at").toLocalDateTime())
-                    .build();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
     public Optional<Author> findById(int id) {
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(FIND_AUTHOR_BY_ID)){
@@ -124,12 +109,12 @@ public class AuthorDao {
         }
     }
 
-    public boolean createNewAuthor(Author dummy) {
+    public boolean createNewAuthor(Author author) {
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(ADD_NEW_AUTHOR_SQL)){
-            statement.setObject(1, dummy.getUsername());
-            statement.setObject(2, dummy.getEmail());
-            statement.setObject(3, dummy.getPassword());
+            statement.setObject(1, author.getUsername());
+            statement.setObject(2, author.getEmail());
+            statement.setObject(3, author.getPassword());
             statement.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -151,5 +136,20 @@ public class AuthorDao {
         } finally {
             ConnectionManager.returnConnection(connection);
         }
+    }
+
+    private Author build(ResultSet resultSet) {
+        try {
+            return Author.builder()
+                    .id(resultSet.getInt("id"))
+                    .username(resultSet.getString("username"))
+                    .email(resultSet.getString("email"))
+                    .password(resultSet.getString("password"))
+                    .createdAt(resultSet.getTimestamp("created_at").toLocalDateTime())
+                    .build();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

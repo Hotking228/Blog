@@ -26,17 +26,6 @@ public class PostsDao {
                     updated_at
             FROM posts
             """;
-    private static final String FIND_POST_BY_ID_SQL = """
-            SELECT 
-                    id,
-                    title,
-                    content,
-                    author_id,
-                    created_at,
-                    updated_at
-            FROM posts
-            WHERE id = ?
-            """;
     private static final String FIND_POST_BY_AUTHOR_SQL = """
             SELECT 
                     posts.id,
@@ -90,22 +79,6 @@ public class PostsDao {
         }
     }
 
-    public Optional<Post> findById(int id) {
-        var connection = ConnectionManager.get();
-        try(var statement = connection.prepareStatement(FIND_POST_BY_ID_SQL)){
-            statement.setObject(1, id);
-            var resultSet = statement.executeQuery();
-            if(resultSet.next()){
-                return Optional.of(build(resultSet));
-            }
-            return Optional.empty();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            ConnectionManager.returnConnection(connection);
-        }
-    }
-
     public Optional<Post> findByTitle(String title){
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(FIND_POST_BY_TITLE_SQL)){
@@ -122,7 +95,7 @@ public class PostsDao {
         }
     }
 
-    public Optional<Post> findByAuthor(String author) {
+    public Optional<Post> findByAuthorUsername(String author) {
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(FIND_POST_BY_AUTHOR_SQL)){
             statement.setObject(1, author);

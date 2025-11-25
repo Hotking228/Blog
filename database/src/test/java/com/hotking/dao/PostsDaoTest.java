@@ -30,25 +30,6 @@ public class PostsDaoTest {
         assertThat(list).hasSizeGreaterThanOrEqualTo(6);
     }
 
-    @ParameterizedTest
-    @MethodSource("getArgumentsForShouldFindPostById")
-    @DisplayName("Поиск статьей по номеру")
-    void shouldFindPostByIdTest(int id){
-        Optional<Post> maybePost = PostsDao.getInstance().findById(id);
-        assertThat(maybePost).isPresent();
-        assertThat(maybePost.get().getId()).isEqualTo(id);
-    }
-
-    static Stream<Arguments> getArgumentsForShouldFindPostById(){
-        return Stream.of(Arguments.of(7),
-                         Arguments.of(8),
-                         Arguments.of(9),
-                         Arguments.of(10),
-                         Arguments.of(11),
-                         Arguments.of(12)
-        );
-    }
-
     @RepeatedTest(3)
     @DisplayName("Пост с уникальным заголовком должен создаваться всегда")
     void createNewPostTest(){
@@ -115,7 +96,7 @@ public class PostsDaoTest {
         @MethodSource("getArgumentsForFindPostByAuthor")
         @DisplayName("Поиск постов по имени пользователя автора")
         void findPostByAuthorTest(String author){
-            Optional<Post> post = PostsDao.getInstance().findByAuthor(author);
+            Optional<Post> post = PostsDao.getInstance().findByAuthorUsername(author);
             assertThat(post).isPresent();
             assertThat(post.get().getAuthor().getUsername()).isIn(authors);
         }
