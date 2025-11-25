@@ -29,6 +29,9 @@
             <form action="/posts" method="get">
                 <button type="submit">Posts</button>
             </form>
+            <form action="/createPost" method="get">
+                <button type="submit">Create post</button>
+            </form>
         </div>
     </body>
 </html>

@@ -1,6 +1,7 @@
 package com.hotking.servlets;
 
 import com.hotking.entity.Author;
+import com.hotking.entity.Post;
 import com.hotking.util.JspHelper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,26 +10,27 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Optional;
 
-@WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/editPost")
+public class EditPostServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(JspHelper.getPath("login"))
+        //TODO: берем информацию из БД
+        Post post = Post.builder()
+                        .title("title")
+                        .content("content")
+                        .build();
+        req.setAttribute("post", post);
+        req.getRequestDispatcher(JspHelper.getPath("editPost"))
                 .forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //TODO: на сервис(проверить существует ли такой пользователь)
-        Optional<Author>author = Optional.of(Author.builder()
-                .email("example@mail.ru")
-                .username("username")
-                .build());
-        //----------------------
-        req.getSession().setAttribute("author", author.get());
-        resp.sendRedirect("/posts");
+        String title = req.getParameter("title");
+        String content = req.getParameter("content");
+        Author author = (Author) req.getSession().getAttribute("author");
+        //TODO: на сервис(сохраняем в БД)
     }
 }

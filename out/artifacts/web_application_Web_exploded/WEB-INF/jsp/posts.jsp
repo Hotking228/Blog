@@ -8,6 +8,14 @@
     <body>
         <%@include file="header.jsp"%>
         <h1>Posts</h1>
+        <form action="/posts" method="post">
+            <label>Type title:
+                <input type="text" name="title" id="titleId">
+            </label>
+
+            <button type="submit">Search</button>
+        </form>
+
             <c:forEach var="post" items="${requestScope.posts}">
                 <a href="${pageContext.request.contextPath}/post?postId=${post.getId()}">
                     ${post.getTitle()}

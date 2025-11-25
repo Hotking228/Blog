@@ -17,6 +17,7 @@ public class PostServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //TODO: с сервиса (подтягиваем нужного пользователя из БД)
         int id = Integer.parseInt(req.getParameter("postId"));
         Author author = Author.builder()
                 .username("author")
