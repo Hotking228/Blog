@@ -32,6 +32,9 @@
             <form action="/createPost" method="get">
                 <button type="submit">Create post</button>
             </form>
+            <form action="/authors" method="get">
+                <button type="submit">Authors</button>
+            </form>
         </div>
     </body>
 </html>

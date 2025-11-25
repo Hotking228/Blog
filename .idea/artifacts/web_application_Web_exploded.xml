@@ -6,11 +6,17 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="web-application" />
+          <element id="module-output" name="domain" />
+          <element id="module-output" name="database" />
+          <element id="module-output" name="service" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: jakarta.el:jakarta.el-api:5.0.0" />
           <element id="library" level="project" name="Maven: jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0" />
           <element id="library" level="project" name="Maven: org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1" />
+          <element id="library" level="project" name="Maven: org.postgresql:postgresql:42.7.8" />
+          <element id="library" level="project" name="Maven: org.checkerframework:checker-qual:3.49.5" />
+          <element id="library" level="project" name="Maven: jakarta.servlet:jakarta.servlet-api:6.0.0" />
         </element>
       </element>
     </root>
