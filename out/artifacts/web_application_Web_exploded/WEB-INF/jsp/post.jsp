@@ -15,6 +15,7 @@
         Created at : ${requestScope.post.createdAt}<br>
         Updated at : ${requestScope.post.updatedAt}<br>
         <form action="/editPost" method="get">
+            <input type="hidden" name="postId" value="${param.postId}">
             <button type="submit">Edit</button>
         </form>
     </body>

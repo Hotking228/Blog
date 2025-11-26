@@ -1,6 +1,6 @@
 package com.hotking.dao;
 
-import com.hotking.entity.Author;
+import com.hotking.entity.AuthorDto;
 import com.hotking.util.ConnectionManager;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -59,10 +59,10 @@ public class AuthorDao {
         return INSTANCE;
     }
 
-    public List<Author> findAll() {
+    public List<AuthorDto> findAll() {
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(FIND_ALL_AUTHORS_SQL)){
-            List<Author> list = new ArrayList<>();
+            List<AuthorDto> list = new ArrayList<>();
             var resultSet = statement.executeQuery();
             while(resultSet.next()){
                 list.add(build(resultSet));
@@ -75,7 +75,7 @@ public class AuthorDao {
         }
     }
 
-    public Optional<Author> findById(int id) {
+    public Optional<AuthorDto> findById(int id) {
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(FIND_AUTHOR_BY_ID)){
             statement.setObject(1, id);
@@ -91,14 +91,16 @@ public class AuthorDao {
         }
     }
 
-    public Optional<Author> findAuthorByUsernameOrEmailAndPassword(String username, String email, String password) {
+    public Optional<AuthorDto> findAuthorByUsernameOrEmailAndPassword(String username, String email, String password) {
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(FIND_AUTHOR_BY_USERNAME_OR_EMAIL_AND_PASSWORD)){
             statement.setObject(1, username);
             statement.setObject(2, email);
             statement.setObject(3, password);
             var resultSet = statement.executeQuery();
+            System.out.println(statement);
             if(resultSet.next()){
+                System.out.println(build(resultSet));
                 return Optional.of(build(resultSet));
             }
             return Optional.empty();
@@ -109,7 +111,7 @@ public class AuthorDao {
         }
     }
 
-    public boolean createNewAuthor(Author author) {
+    public boolean createNewAuthor(AuthorDto author) {
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(ADD_NEW_AUTHOR_SQL)){
             statement.setObject(1, author.getUsername());
@@ -138,9 +140,9 @@ public class AuthorDao {
         }
     }
 
-    private Author build(ResultSet resultSet) {
+    private AuthorDto build(ResultSet resultSet) {
         try {
-            return Author.builder()
+            return AuthorDto.builder()
                     .id(resultSet.getInt("id"))
                     .username(resultSet.getString("username"))
                     .email(resultSet.getString("email"))

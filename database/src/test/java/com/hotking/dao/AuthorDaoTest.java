@@ -1,6 +1,6 @@
 package com.hotking.dao;
 
-import com.hotking.entity.Author;
+import com.hotking.entity.AuthorDto;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -27,7 +27,7 @@ public class AuthorDaoTest {
     @Test
     @DisplayName("Поиск всех авторов(по крайней мере дефолтных)")
     void findAtLeastDefaultAuthorsTest(){
-        List<Author> authors = userDao.findAll();
+        List<AuthorDto> authors = userDao.findAll();
         System.out.println(authors);
         assertThat(authors).hasSizeGreaterThanOrEqualTo(4);
     }
@@ -36,7 +36,7 @@ public class AuthorDaoTest {
     @MethodSource("getArgumentsForFindAuthor")
     @DisplayName("Поиск авторов по id")
     void findAuthorByIdTest(Integer id){
-        Optional<Author> maybeAuthor = AuthorDao.getInstance().findById(id);
+        Optional<AuthorDto> maybeAuthor = AuthorDao.getInstance().findById(id);
         assertThat(maybeAuthor).isPresent();
         assertThat(maybeAuthor.get().getId()).isEqualTo(id);
     }
@@ -53,7 +53,7 @@ public class AuthorDaoTest {
     @MethodSource("getArgumentsForFindAuthorByUsernameOrEmailAndPassword")
     @DisplayName("Поиск авторов по имени пользователя или почте и паролю - для логина")
     void findAuthorByUsernameOrEmailAndPasswordTest(String username, String email, String password){
-        Optional<Author> author = AuthorDao.getInstance().findAuthorByUsernameOrEmailAndPassword(username, email, password);
+        Optional<AuthorDto> author = AuthorDao.getInstance().findAuthorByUsernameOrEmailAndPassword(username, email, password);
         if((username.equals("dummy") && email.equals("dummy")) || password.equals("dummy")){
             assertThat(author).isEmpty();
         }else{
@@ -66,14 +66,16 @@ public class AuthorDaoTest {
                          Arguments.of("max_code", "dummy", "max_secure"),
                          Arguments.of("dummy", "anna@example.com", "anna_pass"),
                          Arguments.of("dummy", "dummy", "dummy"),
-                         Arguments.of("alex_tech", "alex@tech.org", "dummy")
+                         Arguments.of("alex_tech", "alex@tech.org", "dummy"),
+                         Arguments.of("vano", "dummy", "123")
+
                 );
     }
 
     @RepeatedTest(3)
     @DisplayName("Автор с одинаковой почтой/именем пользователя должен создаться 1 раз")
     void createNewAuthorTest(){
-        Author dummy = Author.builder()
+        AuthorDto dummy = AuthorDto.builder()
                 .username("username")
                 .email("email")
                 .password("password")
@@ -88,7 +90,7 @@ public class AuthorDaoTest {
     @RepeatedTest(3)
     @DisplayName("Автор с должен удаляться 1 раз по имени пользователя")
     void deleteAuthorTest(){
-        Author dummy = Author.builder()
+        AuthorDto dummy = AuthorDto.builder()
                 .username("username")
                 .email("email")
                 .password("password")

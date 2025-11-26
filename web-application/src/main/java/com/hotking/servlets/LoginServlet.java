@@ -1,6 +1,8 @@
 package com.hotking.servlets;
 
-import com.hotking.entity.Author;
+import com.hotking.entity.AuthorDto;
+import com.hotking.service.AuthorService;
+import com.hotking.service.PostsService;
 import com.hotking.util.JspHelper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,13 +24,25 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //TODO: на сервис(проверить существует ли такой пользователь)
-        Optional<Author>author = Optional.of(Author.builder()
-                .email("example@mail.ru")
-                .username("username")
-                .build());
-        //----------------------
-        req.getSession().setAttribute("author", author.get());
-        resp.sendRedirect("/posts");
+
+        String username = req.getParameter("usernameOrEmail");
+        String email = req.getParameter("usernameOrEmail");
+        String password = req.getParameter("password");
+        Optional<AuthorDto>  author = AuthorService.getInstance().findByUsernameOrEmailAndPassword(username, email, password);
+        System.out.println(author.isPresent());
+        author.ifPresentOrElse(authorDto -> onLoginSuccess(req, authorDto),
+                () -> onLoginFail(resp));
+    }
+
+    void onLoginSuccess(HttpServletRequest req, AuthorDto author){
+        req.getSession().setAttribute("author", author);
+    }
+
+    void onLoginFail(HttpServletResponse resp) {
+        try {
+            resp.sendRedirect("/login?error");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

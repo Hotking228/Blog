@@ -1,6 +1,6 @@
 package com.hotking.filters;
 
-import com.hotking.entity.Author;
+import com.hotking.entity.AuthorDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
@@ -32,7 +32,7 @@ public class AccessFilter extends HttpFilter {
     }
 
     private boolean isUserLoggedIn(HttpServletRequest req) {
-        var author = (Author)req.getSession().getAttribute("author");
+        var author = (AuthorDto)req.getSession().getAttribute("author");
         return author != null;
     }
 }

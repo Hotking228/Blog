@@ -13,6 +13,7 @@
 
     <body>
         <form action="/editPost" method="post">
+            <input type="hidden" name="postId" value="${requestScope.post.id}">
             <label for="titleId"> Title:
                 <input type="text" name="title" id="titleId" value="${requestScope.post.title}">
             </label><br>

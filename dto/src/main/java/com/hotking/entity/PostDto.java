@@ -7,11 +7,11 @@ import java.time.LocalDateTime;
 
 @Value
 @Builder
-public class Post {
+public class PostDto {
     Integer id;
     String title;
     String content;
-    Author author;
-    LocalDateTime cratedAt;
+    AuthorDto author;
+    LocalDateTime createdAt;
     LocalDateTime updatedAt;
 }

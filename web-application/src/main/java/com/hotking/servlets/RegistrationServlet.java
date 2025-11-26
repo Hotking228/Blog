@@ -1,5 +1,7 @@
 package com.hotking.servlets;
 
+import com.hotking.dao.AuthorDao;
+import com.hotking.service.AuthorService;
 import com.hotking.util.JspHelper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,8 +25,7 @@ public class RegistrationServlet extends HttpServlet {
         String username = req.getParameter("username");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        System.out.println(username + " " + email + " " + password);
+        AuthorService.getInstance().createNewAuthor(username, email, password);
         resp.sendRedirect("/login");
-        //TODO: на сервис - сохраняем пользователя в БД
     }
 }

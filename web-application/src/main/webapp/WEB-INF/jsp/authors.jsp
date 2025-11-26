@@ -7,7 +7,7 @@
 
     <body>
         <h1>Authors:</h1>
-        <c:forEach var="author" items="authors">
+        <c:forEach var="author" items="${requestScope.authors}">
             <a href="/author?authorId=${author.id}">
                 ${author.username}
             </a><br>

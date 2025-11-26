@@ -1,6 +1,6 @@
 package com.hotking.dao;
 
-import com.hotking.entity.Post;
+import com.hotking.entity.PostDto;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -25,7 +25,7 @@ public class PostsDaoTest {
     @Test
     @DisplayName("Поиск всех (хотя бы дефолтных) статьей")
     void shouldFindAtLeastDefaultPostsTest(){
-        List<Post> list = PostsDao.getInstance().findAll();
+        List<PostDto> list = PostsDao.getInstance().findAll();
 
         assertThat(list).hasSizeGreaterThanOrEqualTo(6);
     }
@@ -33,7 +33,7 @@ public class PostsDaoTest {
     @RepeatedTest(3)
     @DisplayName("Пост с уникальным заголовком должен создаваться всегда")
     void createNewPostTest(){
-        Post post = Post.builder()
+        PostDto post = PostDto.builder()
                 .title("title")
                 .content("content")
                 .author(AuthorDao.getInstance().findById(1).get())
@@ -48,7 +48,7 @@ public class PostsDaoTest {
     @RepeatedTest(3)
     @DisplayName("Пост должен удаляться по заголовку(заголовки уникальны)")
     void deletePostTest(){
-        Post post = Post.builder()
+        PostDto post = PostDto.builder()
                 .title("title")
                 .content("content")
                 .author(AuthorDao.getInstance().findById(1).get())
@@ -61,7 +61,7 @@ public class PostsDaoTest {
     }
 
     @Nested
-    class findPostByTitles{
+    class findPostByTitles {
         static List<String> titles = List.of("Мой первый пост",
                 "Java для начинающих",
                 "Рефлексия в Java",
@@ -73,36 +73,15 @@ public class PostsDaoTest {
         @ParameterizedTest
         @MethodSource("getArgumentsForFindPostByTitle")
         @DisplayName("Поиск постов по заголовку")
-        void findPostByTitleTest(String title){
-            Optional<Post> post = PostsDao.getInstance().findByTitle(title);
+        void findPostByTitleTest(String title) {
+            Optional<PostDto> post = PostsDao.getInstance().findByTitle(title);
             assertThat(post).isPresent();
             assertThat(post.get().getTitle()).isIn(titles);
         }
 
-        static Stream<Arguments> getArgumentsForFindPostByTitle(){
+        static Stream<Arguments> getArgumentsForFindPostByTitle() {
             return titles.stream().map(Arguments::of);
         }
     }
 
-    @Nested
-    class findPostByAuthorUsername{
-        static List<String> authors = List.of("ivan_petrov",
-                "anna_smith",
-                "max_code",
-                "alex_tech"
-        );
-
-        @ParameterizedTest
-        @MethodSource("getArgumentsForFindPostByAuthor")
-        @DisplayName("Поиск постов по имени пользователя автора")
-        void findPostByAuthorTest(String author){
-            Optional<Post> post = PostsDao.getInstance().findByAuthorUsername(author);
-            assertThat(post).isPresent();
-            assertThat(post.get().getAuthor().getUsername()).isIn(authors);
-        }
-
-        static Stream<Arguments> getArgumentsForFindPostByAuthor(){
-            return authors.stream().map(Arguments::of);
-        }
-    }
 }

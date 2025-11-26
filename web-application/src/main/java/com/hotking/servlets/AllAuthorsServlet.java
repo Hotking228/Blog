@@ -1,6 +1,6 @@
 package com.hotking.servlets;
 
-import com.hotking.entity.Author;
+import com.hotking.entity.AuthorDto;
 import com.hotking.service.AuthorService;
 import com.hotking.util.JspHelper;
 import jakarta.servlet.ServletException;
@@ -17,7 +17,7 @@ public class AllAuthorsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Author> authors = AuthorService.getInstance().findAllAuthor();
+        List<AuthorDto> authors = AuthorService.getInstance().findAllAuthor();
         req.setAttribute("authors", authors);
         req.getRequestDispatcher(JspHelper.getPath("authors"))
                 .forward(req, resp);

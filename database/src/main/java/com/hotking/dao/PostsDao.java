@@ -1,6 +1,6 @@
 package com.hotking.dao;
 
-import com.hotking.entity.Post;
+import com.hotking.entity.PostDto;
 import com.hotking.util.ConnectionManager;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ public class PostsDao {
                     updated_at
             FROM posts
             """;
-    private static final String FIND_POST_BY_AUTHOR_SQL = """
+    private static final String FIND_POST_BY_AUTHOR_ID_SQL = """
             SELECT 
                     posts.id,
                     posts.title,
@@ -36,7 +36,7 @@ public class PostsDao {
                     posts.updated_at
             FROM posts
             JOIN authors ON author_id = authors.id
-            WHERE username = ?
+            WHERE authors.id = ?
             """;
     private static final String CREATE_NEW_POST_SQL = """
             INSERT INTO posts (title, content, author_id)
@@ -58,16 +58,34 @@ public class PostsDao {
             FROM posts
             WHERE title = ?
             """;
+    private static final String FIND_POST_BY_ID_SQL = """
+            SELECT 
+                    id,
+                    title,
+                    content,
+                    author_id,
+                    created_at,
+                    updated_at
+            FROM posts
+            WHERE id = ?
+            """;
+    private static final String UPDATE_POST_SQL = """
+            UPDATE posts
+            SET title = ?,
+                content = ?,
+                updated_at = NOW()
+            WHERE id = ?
+            """;
 
     public static PostsDao getInstance(){
         return INSTANCE;
     }
 
-    public List<Post> findAll() {
+    public List<PostDto> findAll() {
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(FIND_ALL_POSTS_SQL)){
             var resultSet = statement.executeQuery();
-            List<Post> list = new ArrayList<>();
+            List<PostDto> list = new ArrayList<>();
             while(resultSet.next()){
                 list.add(build(resultSet));
             }
@@ -79,7 +97,7 @@ public class PostsDao {
         }
     }
 
-    public Optional<Post> findByTitle(String title){
+    public Optional<PostDto> findByTitle(String title){
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(FIND_POST_BY_TITLE_SQL)){
             statement.setObject(1, title);
@@ -95,10 +113,27 @@ public class PostsDao {
         }
     }
 
-    public Optional<Post> findByAuthorUsername(String author) {
+    public List<PostDto> findByAuthorId(int id) {
         var connection = ConnectionManager.get();
-        try(var statement = connection.prepareStatement(FIND_POST_BY_AUTHOR_SQL)){
-            statement.setObject(1, author);
+        try(var statement = connection.prepareStatement(FIND_POST_BY_AUTHOR_ID_SQL)){
+            statement.setObject(1, id);
+            var resultSet = statement.executeQuery();
+            List<PostDto> posts = new ArrayList<>();
+            while(resultSet.next()){
+                posts.add(build(resultSet));
+            }
+            return posts;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.returnConnection(connection);
+        }
+    }
+
+    public Optional<PostDto> findById(int id) {
+        var connection = ConnectionManager.get();
+        try(var statement = connection.prepareStatement(FIND_POST_BY_ID_SQL)){
+            statement.setObject(1, id);
             var resultSet = statement.executeQuery();
             if(resultSet.next()){
                 return Optional.of(build(resultSet));
@@ -111,7 +146,7 @@ public class PostsDao {
         }
     }
 
-    public boolean createNewPost(Post post) {
+    public boolean createNewPost(PostDto post) {
         var connection = ConnectionManager.get();
         try(var statement = connection.prepareStatement(CREATE_NEW_POST_SQL)){
             statement.setObject(1, post.getTitle());
@@ -140,18 +175,33 @@ public class PostsDao {
         }
     }
 
-    private Post build(ResultSet resultSet) {
+    public void editPost(PostDto post) {
+        var connection = ConnectionManager.get();
+        try(var statement = connection.prepareStatement(UPDATE_POST_SQL)){
+            statement.setObject(1, post.getTitle());
+            statement.setObject(2, post.getContent());
+            statement.setObject(3, post.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.returnConnection(connection);
+        }
+    }
+
+    private PostDto build(ResultSet resultSet) {
         try {
-            return Post.builder()
+            return PostDto.builder()
                     .id(resultSet.getInt("id"))
                     .title(resultSet.getString("title"))
                     .content(resultSet.getString("content"))
                     .author(AuthorDao.getInstance().findById(resultSet.getInt("author_id")).get())
-                    .cratedAt(resultSet.getTimestamp("created_at").toLocalDateTime())
+                    .createdAt(resultSet.getTimestamp("created_at").toLocalDateTime())
                     .updatedAt(resultSet.getTimestamp("updated_at").toLocalDateTime())
                     .build();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
 }

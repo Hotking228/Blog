@@ -1,7 +1,7 @@
 package com.hotking.service;
 
 import com.hotking.dao.AuthorDao;
-import com.hotking.entity.Author;
+import com.hotking.entity.AuthorDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -17,19 +17,24 @@ public class AuthorService {
         return INSTANCE;
     }
 
-    public List<Author> findAllAuthor(){
+    public List<AuthorDto> findAllAuthor(){
         return AuthorDao.getInstance().findAll();
     }
 
-    public boolean createNewAuthor(Author author){
-        return AuthorDao.getInstance().createNewAuthor(author);
+    public boolean createNewAuthor(String username, String email, String password){
+        return AuthorDao.getInstance().createNewAuthor(AuthorDto.builder()
+                .username(username)
+                .email(email)
+                .password(password)
+                .build()
+        );
     }
 
-    public Optional<Author> findAuthorById(int id){
+    public Optional<AuthorDto> findAuthorById(int id){
         return AuthorDao.getInstance().findById(id);
     }
 
-    public Optional<Author> findByUsernameOrEmailAndPassword(String username, String email,String password){
+    public Optional<AuthorDto> findByUsernameOrEmailAndPassword(String username, String email, String password){
         return AuthorDao.getInstance().findAuthorByUsernameOrEmailAndPassword(username, email, password);
     }
 

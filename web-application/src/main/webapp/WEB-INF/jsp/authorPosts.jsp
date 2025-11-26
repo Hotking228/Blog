@@ -6,11 +6,11 @@
     </head>
 
     <body>
-        <h1>Authors:</h1>
-        <c:forEach var="author" items="${requestScope.authors}">
-            <a href="/author?authorId=${author.id}">
-                ${author.username}
-            </a><br>
+        <h2>Posts by ${requestScope.author.username} ${requestScope.author.email}</h2>
+        <c:forEach var="post" items="${requestScope.posts}">
+            <a href="/post?postId=${post.id}">
+                ${post.title}
+            </a>
         </c:forEach>
     </body>
 </html>

@@ -12,7 +12,7 @@
         <module>database</module>
         <module>web-application</module>
         <module>service</module>
-        <module>domain</module>
+        <module>dto</module>
     </modules>
 
     <dependencyManagement>

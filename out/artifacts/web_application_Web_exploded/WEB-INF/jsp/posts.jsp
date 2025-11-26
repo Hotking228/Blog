@@ -17,7 +17,7 @@
         </form>
 
             <c:forEach var="post" items="${requestScope.posts}">
-                <a href="${pageContext.request.contextPath}/post?postId=${post.getId()}">
+                <a href="/post?postId=${post.getId()}">
                     ${post.getTitle()}
                 </a><br>
             </c:forEach>
